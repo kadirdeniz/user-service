@@ -1,0 +1,433 @@
+{
+  "consumer": {
+    "name": "Client"
+  },
+  "interactions": [
+    {
+      "description": "a request for create user",
+      "providerState": "create user",
+      "request": {
+        "body": {
+          "email": "email@mail.com",
+          "firstname": "name",
+          "lastname": "lastname",
+          "nickname": "nickname",
+          "password": "password"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.email": {
+            "match": "type"
+          },
+          "$.body.firstname": {
+            "match": "type"
+          },
+          "$.body.lastname": {
+            "match": "type"
+          },
+          "$.body.nickname": {
+            "match": "type"
+          },
+          "$.body.password": {
+            "match": "type"
+          }
+        },
+        "method": "POST",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "token": "token"
+          },
+          "message": "User created",
+          "status": true
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.data.token": {
+            "match": "type"
+          },
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for create user email already exists",
+      "providerState": "create user email already exists",
+      "request": {
+        "body": {
+          "email": "email@mail.com",
+          "firstname": "name",
+          "lastname": "lastname",
+          "nickname": "nickname",
+          "password": "password"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.email": {
+            "match": "type"
+          },
+          "$.body.firstname": {
+            "match": "type"
+          },
+          "$.body.lastname": {
+            "match": "type"
+          },
+          "$.body.nickname": {
+            "match": "type"
+          },
+          "$.body.password": {
+            "match": "type"
+          }
+        },
+        "method": "POST",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "data": null,
+          "message": "Email already exists",
+          "status": false
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 400
+      }
+    },
+    {
+      "description": "a request for create user nickname already exists",
+      "providerState": "create user nickname already exists",
+      "request": {
+        "body": {
+          "email": "email@mail.com",
+          "firstname": "name",
+          "lastname": "lastname",
+          "nickname": "nickname",
+          "password": "password"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.email": {
+            "match": "type"
+          },
+          "$.body.firstname": {
+            "match": "type"
+          },
+          "$.body.lastname": {
+            "match": "type"
+          },
+          "$.body.nickname": {
+            "match": "type"
+          },
+          "$.body.password": {
+            "match": "type"
+          }
+        },
+        "method": "POST",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "data": null,
+          "message": "Nickname already exists",
+          "status": false
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 400
+      }
+    },
+    {
+      "description": "a request for delete user",
+      "providerState": "delete user",
+      "request": {
+        "headers": {
+          "Authorization": "Bearer token"
+        },
+        "matchingRules": {
+          "$.header.$": {
+            "match": "regex",
+            "regex": "Bearer .*"
+          }
+        },
+        "method": "DELETE",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "data": null,
+          "message": "User deleted",
+          "status": true
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for get user",
+      "providerState": "get user",
+      "request": {
+        "headers": {
+          "Authorization": "Bearer token"
+        },
+        "matchingRules": {
+          "$.header.$": {
+            "match": "regex",
+            "regex": "Bearer .*"
+          }
+        },
+        "method": "GET",
+        "path": "/user/2"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "email": "email@mail.com",
+            "firstname": "name",
+            "lastname": "lastname",
+            "nickname": "nickname"
+          },
+          "message": "User found",
+          "status": true
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.data.email": {
+            "match": "type"
+          },
+          "$.body.data.firstname": {
+            "match": "type"
+          },
+          "$.body.data.lastname": {
+            "match": "type"
+          },
+          "$.body.data.nickname": {
+            "match": "type"
+          },
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for get user not found",
+      "providerState": "get user not found",
+      "request": {
+        "headers": {
+          "Authorization": "Bearer token"
+        },
+        "matchingRules": {
+          "$.header.$": {
+            "match": "regex",
+            "regex": "Bearer .*"
+          }
+        },
+        "method": "GET",
+        "path": "/user/3"
+      },
+      "response": {
+        "body": {
+          "data": null,
+          "message": "User not found",
+          "status": false
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 404
+      }
+    },
+    {
+      "description": "a request for get users",
+      "providerState": "get users",
+      "request": {
+        "headers": {
+          "Authorization": "Bearer token"
+        },
+        "matchingRules": {
+          "$.header.$.Authorization": {
+            "match": "regex",
+            "regex": "Bearer .*"
+          }
+        },
+        "method": "GET",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "data": [
+            {
+              "email": "email@mail.com",
+              "firstname": "name",
+              "lastname": "lastname",
+              "nickname": "nickname"
+            }
+          ],
+          "message": "Users found",
+          "status": true
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.data[0].email": {
+            "match": "type"
+          },
+          "$.body.data[0].firstname": {
+            "match": "type"
+          },
+          "$.body.data[0].lastname": {
+            "match": "type"
+          },
+          "$.body.data[0].nickname": {
+            "match": "type"
+          },
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for update user",
+      "providerState": "update user",
+      "request": {
+        "body": {
+          "email": "email@mail.com",
+          "firstname": "name",
+          "lastname": "lastname",
+          "nickname": "nickname",
+          "password": "password"
+        },
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.email": {
+            "match": "type"
+          },
+          "$.body.firstname": {
+            "match": "type"
+          },
+          "$.body.lastname": {
+            "match": "type"
+          },
+          "$.body.nickname": {
+            "match": "type"
+          },
+          "$.body.password": {
+            "match": "type"
+          },
+          "$.header.$": {
+            "match": "regex",
+            "regex": "Bearer .*"
+          }
+        },
+        "method": "PUT",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "token": "token"
+          },
+          "message": "User updated",
+          "status": true
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.data.token": {
+            "match": "type"
+          },
+          "$.body.message": {
+            "match": "type"
+          },
+          "$.body.status": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "10.2.2"
+    },
+    "pactRust": {
+      "ffi": "0.3.14",
+      "models": "1.0.0"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "provider": {
+    "name": "UserService"
+  }
+}

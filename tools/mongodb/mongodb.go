@@ -14,7 +14,14 @@ type MongoDB struct {
 	Database *mongo.Database
 }
 
-func NewMongoDB(username, password, host, port string) *MongoDB {
+type MongoDBInterface interface {
+	GetMongoDBURI() string
+	Connect() (*MongoDB, error)
+	GetUserCollection() *mongo.Collection
+	GetDatabase() *mongo.Database
+}
+
+func NewMongoDB(username, password, host, port string) MongoDBInterface {
 	return &MongoDB{
 		Username: username,
 		Password: password,
@@ -23,11 +30,19 @@ func NewMongoDB(username, password, host, port string) *MongoDB {
 	}
 }
 
-func (m MongoDB) GetMongoDBURI() string {
+func (m *MongoDB) GetMongoDBURI() string {
 	return "mongodb://" + m.Username + ":" + m.Password + "@" + m.Host + ":" + m.Port
 }
 
-func (m MongoDB) Connect() (*MongoDB, error) {
+func (m *MongoDB) GetUserCollection() *mongo.Collection {
+	return m.Database.Collection("user")
+}
+
+func (m *MongoDB) GetDatabase() *mongo.Database {
+	return m.Database
+}
+
+func (m *MongoDB) Connect() (*MongoDB, error) {
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(m.GetMongoDBURI()))
 	if err != nil {
 		return nil, err
@@ -40,9 +55,5 @@ func (m MongoDB) Connect() (*MongoDB, error) {
 
 	m.Database = client.Database("user")
 
-	return &m, nil
-}
-
-func (m MongoDB) GetUserCollection() *mongo.Collection {
-	return m.Database.Collection("user")
+	return m, nil
 }

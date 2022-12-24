@@ -1,6 +1,9 @@
 package user
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+)
 
 //go:generate mockgen -source=repository.go -destination=../../test/mock/mock_repository.go -package=mock
 type IRepository interface {
@@ -11,10 +14,14 @@ type IRepository interface {
 	GetUsers() ([]*User, error)
 }
 
-type Repository struct{}
+type Repository struct {
+	Collection *mongo.Collection
+}
 
-func NewRepository() IRepository {
-	return &Repository{}
+func NewRepository(collection *mongo.Collection) IRepository {
+	return &Repository{
+		Collection: collection,
+	}
 }
 
 func (r Repository) Upsert(user *User) error {

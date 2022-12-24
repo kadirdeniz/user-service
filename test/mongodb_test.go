@@ -34,3 +34,13 @@ func Test_GetUserCollection(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEqual(t, nil, userCollection)
 }
+
+func Test_GetDatabase(t *testing.T) {
+
+	db, err := mongodb.NewMongoDB("admin", "admin", "localhost", "27017").Connect()
+
+	database := db.Database
+
+	assert.Equal(t, nil, err)
+	assert.NotEqual(t, nil, database)
+}

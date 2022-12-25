@@ -4,14 +4,17 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"user-service/pkg"
 )
 
 type MongoDB struct {
-	Username string
-	Password string
-	Host     string
-	Port     string
-	Database *mongo.Database
+	Username   string
+	Password   string
+	Host       string
+	Port       string
+	DBName     string
+	Collection string
+	Database   *mongo.Database
 }
 
 type MongoDBInterface interface {
@@ -21,12 +24,14 @@ type MongoDBInterface interface {
 	GetDatabase() *mongo.Database
 }
 
-func NewMongoDB(username, password, host, port string) MongoDBInterface {
+func NewMongoDB(config pkg.MongoDBConfig) MongoDBInterface {
 	return &MongoDB{
-		Username: username,
-		Password: password,
-		Host:     host,
-		Port:     port,
+		Username:   config.Username,
+		Password:   config.Password,
+		Host:       config.Host,
+		Port:       config.Port,
+		DBName:     config.Database,
+		Collection: config.Collection,
 	}
 }
 
@@ -35,7 +40,7 @@ func (m *MongoDB) GetMongoDBURI() string {
 }
 
 func (m *MongoDB) GetUserCollection() *mongo.Collection {
-	return m.Database.Collection("user")
+	return m.Database.Collection(m.Collection)
 }
 
 func (m *MongoDB) GetDatabase() *mongo.Database {
@@ -53,7 +58,7 @@ func (m *MongoDB) Connect() (*MongoDB, error) {
 		return nil, err
 	}
 
-	m.Database = client.Database("user")
+	m.Database = client.Database(m.DBName)
 
 	return m, nil
 }

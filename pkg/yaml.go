@@ -15,10 +15,10 @@ type MongoDBConfig struct {
 }
 
 type RedisConfig struct {
-	URL      string `yaml:"url"`
+	Host     string `yaml:"host"`
+	Port     string `yaml:"port"`
 	Password string `yaml:"password"`
-	Database int    `yaml:"database"`
-	Prefix   string `yaml:"prefix"`
+	DB       int    `yaml:"db"`
 }
 
 type Configs struct {

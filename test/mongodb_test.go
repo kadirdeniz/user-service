@@ -3,12 +3,22 @@ package test
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"user-service/pkg"
 	"user-service/tools/mongodb"
 )
 
+var config = pkg.MongoDBConfig{
+	Username:   "admin",
+	Password:   "admin",
+	Host:       "localhost",
+	Port:       "27017",
+	Database:   "user",
+	Collection: "users",
+}
+
 func Test_GetMongoDBURI(t *testing.T) {
 
-	mongo := mongodb.NewMongoDB("admin", "admin", "localhost", "27017")
+	mongo := mongodb.NewMongoDB(config)
 
 	mongodbURI := mongo.GetMongoDBURI()
 
@@ -17,7 +27,7 @@ func Test_GetMongoDBURI(t *testing.T) {
 
 func Test_NewMongoDB(t *testing.T) {
 
-	mongo := mongodb.NewMongoDB("admin", "admin", "localhost", "27017")
+	mongo := mongodb.NewMongoDB(config)
 
 	db, err := mongo.Connect()
 
@@ -27,7 +37,7 @@ func Test_NewMongoDB(t *testing.T) {
 
 func Test_GetUserCollection(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB("admin", "admin", "localhost", "27017").Connect()
+	db, err := mongodb.NewMongoDB(config).Connect()
 
 	userCollection := db.GetUserCollection()
 
@@ -37,9 +47,9 @@ func Test_GetUserCollection(t *testing.T) {
 
 func Test_GetDatabase(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB("admin", "admin", "localhost", "27017").Connect()
+	db, err := mongodb.NewMongoDB(config).Connect()
 
-	database := db.Database
+	database := db.GetDatabase()
 
 	assert.Equal(t, nil, err)
 	assert.NotEqual(t, nil, database)

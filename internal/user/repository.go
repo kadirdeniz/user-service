@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -15,12 +16,14 @@ type IRepository interface {
 }
 
 type Repository struct {
-	Collection *mongo.Collection
+	MongoDBCollection *mongo.Collection
+	RedisClient       *redis.Client
 }
 
-func NewRepository(collection *mongo.Collection) IRepository {
+func NewRepository(mongoDBCollection *mongo.Collection, redisClient *redis.Client) IRepository {
 	return &Repository{
-		Collection: collection,
+		MongoDBCollection: mongoDBCollection,
+		RedisClient:       redisClient,
 	}
 }
 

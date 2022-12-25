@@ -37,13 +37,19 @@ func Test_CreateUserHandler(t *testing.T) {
 	mockRepository.
 		EXPECT().
 		IsEmailExists(request.Email).
-		Return(false).
+		Return(false, nil).
 		Times(1)
 
 	mockRepository.
 		EXPECT().
 		IsNicknameExists(request.Nickname).
-		Return(false).
+		Return(false, nil).
+		Times(1)
+
+	mockRepository.
+		EXPECT().
+		Upsert(gomock.Any()).
+		Return(nil).
 		Times(1)
 
 	mockService := mock.NewMockIService(ctrl)
@@ -61,9 +67,9 @@ func Test_CreateUserHandler(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	asd, err := io.ReadAll(resp.Body)
+	responseBody, err := io.ReadAll(resp.Body)
 
-	err = json.Unmarshal(asd, &responseObj)
+	err = json.Unmarshal(responseBody, &responseObj)
 	if err != nil {
 		t.Errorf("Cannot unmarshal response: %v", err)
 	}

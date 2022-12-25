@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 )
@@ -15,40 +14,50 @@ type MongoDBConfig struct {
 	Collection string `yaml:"collection"`
 }
 
+type RedisConfig struct {
+	URL      string `yaml:"url"`
+	Password string `yaml:"password"`
+	Database int    `yaml:"database"`
+	Prefix   string `yaml:"prefix"`
+}
+
 type Configs struct {
-	MongoDB MongoDBConfig
+	MongoDB MongoDBConfig `yaml:"mongodb"`
+	Redis   RedisConfig   `yaml:"redis"`
 }
 
 func NewConfigs() *Configs {
 	return &Configs{
 		MongoDB: MongoDBConfig{},
+		Redis:   RedisConfig{},
 	}
 }
 
-func (c *Configs) ReadYamlFile(path string, object interface{}) (interface{}, error) {
+func (c *Configs) ReadYamlFile(path string) error {
 
-	var mongoDBConfig MongoDBConfig
-
-	yamlFile, err := ioutil.ReadFile("configs/mongodb.yaml")
+	yamlFile, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	err = yaml.Unmarshal(yamlFile, mongoDBConfig)
+	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	fmt.Println(mongoDBConfig)
-	return object, nil
+
+	return nil
 }
 
-func (c *Configs) ReadConfigFiles() (*Configs, error) {
-	mongoDBConfig, err := c.ReadYamlFile("configs/mongodb.yaml", c.MongoDB)
+func (c *Configs) ReadConfigFiles() error {
+	err := c.ReadYamlFile("configs/mongodb.yaml")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	c.MongoDB = mongoDBConfig.(MongoDBConfig)
+	err = c.ReadYamlFile("configs/redis.yaml")
+	if err != nil {
+		return err
+	}
 
-	return c, nil
+	return nil
 }

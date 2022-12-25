@@ -1,0 +1,5 @@
+redis:
+    url: redis://localhost:6379
+    password: 123
+    database: 0
+    prefix: 123

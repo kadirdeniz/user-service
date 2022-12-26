@@ -16,13 +16,13 @@ type IRepository interface {
 }
 
 type Repository struct {
-	MongoDBCollection *mongo.Collection
+	MongoDBCollection *mongo.Database
 	RedisClient       *redis.Client
 }
 
-func NewRepository(mongoDBCollection *mongo.Collection, redisClient *redis.Client) IRepository {
+func NewRepository(mongodb *mongo.Database, redisClient *redis.Client) IRepository {
 	return &Repository{
-		MongoDBCollection: mongoDBCollection,
+		MongoDBCollection: mongodb,
 		RedisClient:       redisClient,
 	}
 }

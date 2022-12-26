@@ -10,15 +10,7 @@ import (
 	"user-service/tools/redis"
 )
 
-var Configs = pkg.NewConfigs()
-
 func Router() {
-
-	// Read config files
-	if err := Configs.ReadConfigFiles(); err != nil {
-		log.Fatal(err)
-	}
-
 	err := StartServer(8000)
 	if err != nil {
 		log.Fatal(err)
@@ -28,19 +20,23 @@ func Router() {
 
 func StartServer(port int) error {
 
-	// database connection
-	mongoDBConnection, err := mongodb.NewMongoDB(Configs.MongoDB).Connect()
+	// Connect to MongoDB
+	db, err := mongodb.NewMongoDB(pkg.AppConfigs.MongoDB).Connect()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
-	// redis connection
-	redisConnection := redis.NewRedis(Configs.Redis)
+	// Connect to Redis
+	redis := redis.NewRedis(pkg.AppConfigs.Redis)
 
-	handler := NewHandler(
-		user.NewRepository(mongoDBConnection.GetUserCollection(), redisConnection),
-		user.NewService(),
-	)
+	// Create repository
+	repository := user.NewRepository(db.GetDatabase(), redis)
+
+	// Create service
+	service := user.NewService()
+
+	// Create handler
+	handler := NewHandler(repository, service)
 
 	app := fiber.New()
 

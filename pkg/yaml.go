@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 )
 
+var AppConfigs Configs
+
 type MongoDBConfig struct {
 	Username   string `yaml:"username"`
 	Password   string `yaml:"password"`
@@ -24,6 +26,13 @@ type RedisConfig struct {
 type Configs struct {
 	MongoDB MongoDBConfig `yaml:"mongodb"`
 	Redis   RedisConfig   `yaml:"redis"`
+}
+
+func init() {
+	err := NewConfigs().ReadConfigFiles()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func NewConfigs() *Configs {

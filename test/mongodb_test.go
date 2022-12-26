@@ -7,18 +7,11 @@ import (
 	"user-service/tools/mongodb"
 )
 
-var config = pkg.MongoDBConfig{
-	Username:   "admin",
-	Password:   "admin",
-	Host:       "localhost",
-	Port:       "27017",
-	Database:   "user",
-	Collection: "users",
-}
+var config = pkg.AppConfigs
 
 func Test_GetMongoDBURI(t *testing.T) {
 
-	mongo := mongodb.NewMongoDB(config)
+	mongo := mongodb.NewMongoDB(config.MongoDB)
 
 	mongodbURI := mongo.GetMongoDBURI()
 
@@ -27,7 +20,7 @@ func Test_GetMongoDBURI(t *testing.T) {
 
 func Test_NewMongoDB(t *testing.T) {
 
-	mongo := mongodb.NewMongoDB(config)
+	mongo := mongodb.NewMongoDB(config.MongoDB)
 
 	db, err := mongo.Connect()
 
@@ -37,7 +30,7 @@ func Test_NewMongoDB(t *testing.T) {
 
 func Test_GetUserCollection(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(config).Connect()
+	db, err := mongodb.NewMongoDB(config.MongoDB).Connect()
 
 	userCollection := db.GetUserCollection()
 
@@ -47,7 +40,7 @@ func Test_GetUserCollection(t *testing.T) {
 
 func Test_GetDatabase(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(config).Connect()
+	db, err := mongodb.NewMongoDB(config.MongoDB).Connect()
 
 	database := db.GetDatabase()
 

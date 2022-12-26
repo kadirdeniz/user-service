@@ -11,6 +11,7 @@ type IRepository interface {
 	Upsert(user *User) error
 	IsEmailExists(email string) (bool, error)
 	IsNicknameExists(nickname string) (bool, error)
+	DeleteUserByID(id primitive.ObjectID) error
 	GetUserByID(id primitive.ObjectID) (*User, error)
 	GetUsers() ([]*User, error)
 }
@@ -48,6 +49,11 @@ func (r Repository) GetUserByID(id primitive.ObjectID) (*User, error) {
 }
 
 func (r Repository) GetUsers() ([]*User, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r Repository) DeleteUserByID(id primitive.ObjectID) error {
 	//TODO implement me
 	panic("implement me")
 }

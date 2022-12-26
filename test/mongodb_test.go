@@ -4,10 +4,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"user-service/pkg"
+	"user-service/tools/dockertest"
 	"user-service/tools/mongodb"
 )
 
 var config = pkg.AppConfigs
+var dockerContainer = dockertest.NewDockertest("")
 
 func Test_GetMongoDBURI(t *testing.T) {
 
@@ -21,7 +23,6 @@ func Test_GetMongoDBURI(t *testing.T) {
 func Test_NewMongoDB(t *testing.T) {
 
 	mongo := mongodb.NewMongoDB(config.MongoDB)
-
 	db, err := mongo.Connect()
 
 	assert.Equal(t, nil, err)

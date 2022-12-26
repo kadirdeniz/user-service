@@ -1,41 +1,66 @@
 package dockertest
 
 import (
+	"errors"
 	"github.com/ory/dockertest/v3"
 	"log"
+	"user-service/pkg"
 	"user-service/tools/mongodb"
 )
 
-func NewDockerTest() {
-	// Setup
-	pool, err := dockertest.NewPool("")
+type DockerTest struct{}
+
+var MongoDBEnvirontmentVariables = []string{
+	"MONGO_INITDB_ROOT_USERNAME=" + pkg.AppConfigs.MongoDB.Username,
+	"MONGO_INITDB_ROOT_PASSWORD=" + pkg.AppConfigs.MongoDB.Password,
+	"MONGO_INITDB_DATABASE=" + pkg.AppConfigs.MongoDB.Database,
+}
+
+const MongoDBImage = "mongo"
+const MongoDBTag = "5.0"
+
+type Dockertest struct {
+	Pool     *dockertest.Pool
+	Resource *dockertest.Resource
+}
+
+func NewDockertest(endpoint string) *Dockertest {
+	pool, err := dockertest.NewPool(endpoint)
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
 
-	environmentVariables := []string{
-		"MONGO_INITDB_ROOT_USERNAME=root",
-		"MONGO_INITDB_ROOT_PASSWORD=password",
+	return &Dockertest{
+		Pool: pool,
 	}
+}
 
-	resource, err := pool.Run("mongo", "5.0", environmentVariables)
+func (d *Dockertest) RunMongoDB() error {
+
+	var err error
+
+	d.Resource, err = d.Pool.Run(MongoDBImage, MongoDBTag, MongoDBEnvirontmentVariables)
 	if err != nil {
-		log.Fatalf("Could not start resource: %s", err)
+		return errors.New("Could not start resource")
 	}
 
-	// exponential backoff-retry, because the application in the container might not be ready to accept connections yet
-	if err = pool.Retry(func() error {
-		_, err := mongodb.NewMongoDB("root", "password", "localhost", resource.GetPort("27017/tcp")).Connect()
+	if err = d.Pool.Retry(func() error {
+		_, err := mongodb.NewMongoDB(pkg.AppConfigs.MongoDB).Connect()
 		if err != nil {
 			return err
 		}
 
 		return nil
 	}); err != nil {
-		log.Fatalf("Could not connect to docker: %s", err)
+		return errors.New("Could not connect to docker")
 	}
 
-	if err = pool.Purge(resource); err != nil {
-		log.Fatalf("Could not purge resource: %s", err)
+	return nil
+}
+
+func (d *Dockertest) Purge() error {
+	if err := d.Pool.Purge(d.Resource); err != nil {
+		return errors.New("Could not purge resource")
 	}
+	return nil
 }

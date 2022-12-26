@@ -28,13 +28,6 @@ type Configs struct {
 	Redis   RedisConfig   `yaml:"redis"`
 }
 
-func init() {
-	err := NewConfigs().ReadConfigFiles()
-	if err != nil {
-		panic(err)
-	}
-}
-
 func NewConfigs() *Configs {
 	return &Configs{
 		MongoDB: MongoDBConfig{},

@@ -20,6 +20,11 @@ func Router() {
 
 func StartServer(port int) error {
 
+	// Read config files
+	if err := pkg.AppConfigs.ReadConfigFiles(); err != nil {
+		log.Fatal(err)
+	}
+
 	// Connect to MongoDB
 	db, err := mongodb.NewMongoDB(pkg.AppConfigs.MongoDB).Connect()
 	if err != nil {

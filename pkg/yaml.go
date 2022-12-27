@@ -29,10 +29,7 @@ type Configs struct {
 }
 
 func NewConfigs() *Configs {
-	return &Configs{
-		MongoDB: MongoDBConfig{},
-		Redis:   RedisConfig{},
-	}
+	return &AppConfigs
 }
 
 func (c *Configs) ReadYamlFile(path string) error {

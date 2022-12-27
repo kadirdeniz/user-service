@@ -21,7 +21,7 @@ func Router() {
 func StartServer(port int) error {
 
 	// Read config files
-	if err := pkg.AppConfigs.ReadConfigFiles(); err != nil {
+	if err := pkg.NewConfigs().ReadConfigFiles(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -32,10 +32,13 @@ func StartServer(port int) error {
 	}
 
 	// Connect to Redis
-	redis := redis.NewRedis(pkg.AppConfigs.Redis)
+	redis, err := redis.NewRedis(pkg.AppConfigs.Redis).Connect()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Create repository
-	repository := user.NewRepository(db.GetDatabase(), redis)
+	repository := user.NewRepository(db, redis)
 
 	// Create service
 	service := user.NewService()

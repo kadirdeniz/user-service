@@ -11,7 +11,7 @@ import (
 	"user-service/tools/redis"
 )
 
-var userMock = user.User{
+var userMock = &user.User{
 	ID:        primitive.NewObjectID(),
 	FirstName: "John",
 	LastName:  "Doe",
@@ -20,7 +20,7 @@ var userMock = user.User{
 	Password:  "password",
 }
 
-var config = pkg.RedisConfig{
+var redisConfig = pkg.RedisConfig{
 	Host: "localhost",
 	Port: "6379",
 	//Password: "",
@@ -44,22 +44,22 @@ func TestRedis(t *testing.T) {
 
 func newRedis(t *testing.T) {
 
-	redis := redis.NewRedis(config)
+	redis := redis.NewRedis(redisConfig)
 	assert.NotNil(t, redis)
 }
 
 func set(t *testing.T) {
 
-	redis := redis.NewRedis(config)
+	redis := redis.NewRedis(redisConfig)
 	redis.Connect()
 
-	err := redis.SetUser(&userMock, time.Minute*20)
+	err := redis.SetUser(userMock, time.Minute*20)
 	assert.Nil(t, err)
 }
 
 func get(t *testing.T) {
 
-	redis := redis.NewRedis(config)
+	redis := redis.NewRedis(redisConfig)
 	redis.Connect()
 
 	user, err := redis.GetUserByID(userMock.ID)

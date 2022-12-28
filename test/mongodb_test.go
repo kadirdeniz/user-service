@@ -8,7 +8,7 @@ import (
 	"user-service/tools/mongodb"
 )
 
-var redisConfig = pkg.MongoDBConfig{
+var mongoConfig = pkg.MongoDBConfig{
 	Username: "admin",
 	Password: "admin",
 	Host:     "localhost",
@@ -20,7 +20,7 @@ func TestMongoDB(t *testing.T) {
 
 	var dockerContainer = dockertest.NewDockertest("")
 
-	if err := dockerContainer.RunMongoDB(redisConfig); err != nil {
+	if err := dockerContainer.RunMongoDB(mongoConfig); err != nil {
 		t.Fatal(err)
 	}
 
@@ -40,7 +40,7 @@ func TestMongoDB(t *testing.T) {
 
 func getMongoDBURI(t *testing.T) {
 
-	mongo := mongodb.NewMongoDB(redisConfig)
+	mongo := mongodb.NewMongoDB(mongoConfig)
 	mongodbURI := mongo.GetMongoDBURI()
 
 	assert.Equal(t, "mongodb://admin:admin@localhost:27017", mongodbURI)
@@ -48,7 +48,7 @@ func getMongoDBURI(t *testing.T) {
 
 func newMongoDB(t *testing.T) {
 
-	mongo := mongodb.NewMongoDB(redisConfig)
+	mongo := mongodb.NewMongoDB(mongoConfig)
 	db, err := mongo.Connect()
 
 	assert.Equal(t, nil, err)
@@ -57,7 +57,7 @@ func newMongoDB(t *testing.T) {
 
 func getUserCollection(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
 	userCollection := db.GetUserCollection()
 
@@ -67,7 +67,7 @@ func getUserCollection(t *testing.T) {
 
 func getDatabase(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
 	database := db.GetDatabase()
 
@@ -77,16 +77,16 @@ func getDatabase(t *testing.T) {
 
 func upsert(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
-	err = db.Upsert(&userMock)
+	err = db.Upsert(userMock)
 
 	assert.Equal(t, nil, err)
 }
 
 func isEmailExists(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
 	emailExists, err := db.IsEmailExists(userMock.Email)
 
@@ -96,7 +96,7 @@ func isEmailExists(t *testing.T) {
 
 func isNicknameExists(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
 	nicknameExists, err := db.IsNicknameExists(userMock.Nickname)
 
@@ -106,7 +106,7 @@ func isNicknameExists(t *testing.T) {
 
 func getUserByID(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
 	user, err := db.GetUserByID(userMock.ID)
 
@@ -116,7 +116,7 @@ func getUserByID(t *testing.T) {
 
 func getUsers(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
 	users, err := db.GetUsers()
 
@@ -126,7 +126,7 @@ func getUsers(t *testing.T) {
 
 func deleteUserByID(t *testing.T) {
 
-	db, err := mongodb.NewMongoDB(redisConfig).Connect()
+	db, err := mongodb.NewMongoDB(mongoConfig).Connect()
 
 	err = db.DeleteUserByID(userMock.ID)
 

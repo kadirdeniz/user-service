@@ -35,7 +35,7 @@ func NewDockertest(endpoint string) *Dockertest {
 	}
 }
 
-func (d *Dockertest) RunMongoDB() error {
+func (d *Dockertest) RunMongoDB(config pkg.MongoDBConfig) error {
 
 	var err error
 
@@ -45,7 +45,7 @@ func (d *Dockertest) RunMongoDB() error {
 	}
 
 	if err = d.Pool.Retry(func() error {
-		_, err := mongodb.NewMongoDB(pkg.AppConfigs.MongoDB).Connect()
+		_, err := mongodb.NewMongoDB(config).Connect()
 		if err != nil {
 			return err
 		}
@@ -53,6 +53,18 @@ func (d *Dockertest) RunMongoDB() error {
 		return nil
 	}); err != nil {
 		return errors.New("Could not connect to docker")
+	}
+
+	return nil
+}
+
+func (d *Dockertest) RunRedis() error {
+
+	var err error
+
+	d.Resource, err = d.Pool.Run("redis", "5.0.5", nil)
+	if err != nil {
+		return errors.New("Could not start resource")
 	}
 
 	return nil

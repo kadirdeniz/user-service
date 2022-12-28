@@ -1,8 +1,8 @@
 package internal
 
 import (
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
 	"user-service/internal/user"
 	"user-service/tools/mongodb"
 	"user-service/tools/redis"
@@ -36,7 +36,7 @@ func (r Repository) Upsert(user *user.User) error {
 	}
 
 	if err := r.RedisClient.SetUser(user, redis.TTL); err != nil {
-		log.Printf("Error while setting user to redis:", err)
+		fmt.Println("Error while setting user to redis:", err)
 		return nil
 	}
 
@@ -65,7 +65,7 @@ func (r Repository) GetUserByID(id primitive.ObjectID) (*user.User, error) {
 
 	userObj, err := r.RedisClient.GetUserByID(id)
 	if err != nil {
-		log.Printf("Error while getting user from redis:", err)
+		fmt.Println("Error while getting user from redis:", err)
 	} else if userObj != nil {
 		return userObj, nil
 	}
@@ -100,7 +100,7 @@ func (r Repository) DeleteUserByID(id primitive.ObjectID) error {
 	}
 
 	if err := r.RedisClient.SetUser(user, 0); err != nil {
-		log.Printf("Error while deleting user from redis:", err)
+		fmt.Println("Error while deleting user from redis:", err)
 	}
 
 	return nil

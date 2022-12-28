@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"user-service/internal/user"
+	"user-service/pkg"
 )
 
 func (db *MongoDB) Upsert(user *user.User) error {
@@ -44,19 +45,26 @@ func (db *MongoDB) DeleteUserByID(id primitive.ObjectID) error {
 }
 
 func (db *MongoDB) GetUserByID(id primitive.ObjectID) (*user.User, error) {
-	var user user.User
+	var userObj user.User
 
-	if err := db.GetUserCollection().FindOne(CTX, bson.M{"_id": id}).Decode(&user); err != nil {
+	if err := db.GetUserCollection().FindOne(CTX, bson.M{"_id": id}).Decode(&userObj); err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			return new(user.User), pkg.ErrUserNotFound
+		}
 		return nil, err
 	}
 
-	return &user, nil
+	return &userObj, nil
 }
 
 func (db *MongoDB) GetUsers() ([]*user.User, error) {
 	var users []*user.User
 
 	cursor, err := db.GetUserCollection().Find(CTX, bson.M{})
+
+	if cursor.RemainingBatchLength() == 0 {
+		return users, pkg.ErrUserNotFound
+	}
 	if err != nil {
 		return nil, err
 	}

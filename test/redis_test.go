@@ -31,7 +31,7 @@ func TestRedis(t *testing.T) {
 
 	var dockerContainer = dockertest.NewDockertest("")
 
-	if err := dockerContainer.RunRedis(); err != nil {
+	if err := dockerContainer.RunRedis(redisConfig); err != nil {
 		t.Fatal(err)
 	}
 

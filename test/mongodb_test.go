@@ -43,7 +43,7 @@ func getMongoDBURI(t *testing.T) {
 	mongo := mongodb.NewMongoDB(mongoConfig)
 	mongodbURI := mongo.GetMongoDBURI()
 
-	assert.Equal(t, "mongodb://admin:admin@localhost:27017", mongodbURI)
+	assert.Equal(t, "mongodb://"+mongoConfig.Username+":"+mongoConfig.Password+"@"+mongoConfig.Host+":"+mongoConfig.Port+"", mongodbURI)
 }
 
 func newMongoDB(t *testing.T) {
@@ -111,7 +111,7 @@ func getUserByID(t *testing.T) {
 	user, err := db.GetUserByID(userMock.ID)
 
 	assert.Equal(t, nil, err)
-	assert.Equal(t, userMock, *user)
+	assert.Equal(t, userMock, user)
 }
 
 func getUsers(t *testing.T) {

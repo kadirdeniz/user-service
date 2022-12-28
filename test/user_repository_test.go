@@ -14,16 +14,13 @@ var redisContainer = dockertest.NewDockertest("")
 
 func Test_UserRepository(t *testing.T) {
 
-	if err := mongoContainer.RunMongoDB(mongoConfig); err != nil {
-		t.Fatal(err)
-	}
+	err := mongoContainer.RunMongoDB(mongoConfig)
+	assert.Nil(t, err)
 
-	if err := redisContainer.RunRedis(); err != nil {
-		t.Fatal(err)
-	}
+	err = redisContainer.RunRedis(redisConfig)
+	assert.Nil(t, err)
 
 	// Run tests here
-
 	userRepositoryUpsert(t)
 	userRepositoryGetUserByID(t)
 	userRepositoryGetUsers(t)
@@ -56,7 +53,7 @@ func userRepositoryDeleteUserByID(t *testing.T) {
 
 	err := repo.DeleteUserByID(userMock.ID)
 
-	assert.NotNil(t, err)
+	assert.Nil(t, err)
 }
 
 func userRepositoryGetUserByID(t *testing.T) {

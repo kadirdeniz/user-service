@@ -6,6 +6,7 @@ import (
 	"log"
 	"user-service/pkg"
 	"user-service/tools/mongodb"
+	"user-service/tools/redis"
 )
 
 type DockerTest struct{}
@@ -58,13 +59,24 @@ func (d *Dockertest) RunMongoDB(config pkg.MongoDBConfig) error {
 	return nil
 }
 
-func (d *Dockertest) RunRedis() error {
+func (d *Dockertest) RunRedis(config pkg.RedisConfig) error {
 
 	var err error
 
 	d.Resource, err = d.Pool.Run("redis", "5.0.5", nil)
 	if err != nil {
 		return errors.New("Could not start resource")
+	}
+
+	if err = d.Pool.Retry(func() error {
+		_, err := redis.NewRedis(config).Connect()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.New("Could not connect to docker")
 	}
 
 	return nil

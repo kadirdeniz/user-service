@@ -1,7 +1,6 @@
 package internal_test
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"testing"
 	"user-service/internal"
 	"user-service/internal/user"
@@ -33,15 +32,6 @@ var redisConfig = pkg.RedisConfig{
 func TestUserRepository(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "User Repository Suite")
-}
-
-type IRepository interface {
-	Upsert(user *user.User) error
-	IsEmailExists(email string) (bool, error)
-	IsNicknameExists(nickname string) (bool, error)
-	DeleteUserByID(id primitive.ObjectID) error
-	GetUserByID(id primitive.ObjectID) (*user.User, error)
-	GetUsers() ([]*user.User, error)
 }
 
 var _ = Describe("User Repository", Ordered, func() {
@@ -99,10 +89,9 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("GetUserByID", func() {
 			It("should return user", func() {
-				userObj, err := repo.GetUserByID(mock.MockUser.ID)
+				_, err := repo.GetUserByID(mock.MockUser.ID)
 				Expect(err).ShouldNot(BeNil())
 				Expect(err).Should(Equal(pkg.ErrUserNotFound))
-				Expect(userObj).Should(Equal(new(user.User)))
 			})
 		})
 
@@ -147,7 +136,11 @@ var _ = Describe("User Repository", Ordered, func() {
 				userObj, err := repo.GetUserByID(mock.MockUser.ID)
 				Expect(err).Should(BeNil())
 				Expect(userObj).ShouldNot(BeNil())
-				Expect(userObj).Should(Equal(mock.MockUser))
+				Expect(userObj.ID).Should(Equal(mock.MockUser.ID))
+				Expect(userObj.FirstName).Should(Equal(mock.MockUser.FirstName))
+				Expect(userObj.LastName).Should(Equal(mock.MockUser.LastName))
+				Expect(userObj.Email).Should(Equal(mock.MockUser.Email))
+				Expect(userObj.Nickname).Should(Equal(mock.MockUser.Nickname))
 			})
 		})
 

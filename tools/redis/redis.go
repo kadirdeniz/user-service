@@ -42,9 +42,9 @@ func (r *Redis) GetRedisClient() *redis.Client {
 
 func (r *Redis) Connect() (*Redis, error) {
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     r.Host + ":" + r.Port,
-		Password: r.Password,
-		DB:       r.DB,
+		Addr: r.Host + ":" + r.Port,
+		//Password: r.Password,
+		DB: r.DB,
 	})
 
 	return r, nil

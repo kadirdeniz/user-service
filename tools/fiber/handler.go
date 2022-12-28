@@ -3,13 +3,14 @@ package fiber
 import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"user-service/internal"
 	"user-service/internal/user"
 	"user-service/pkg"
 	"user-service/pkg/dto"
 )
 
 type Handler struct {
-	repository user.IRepository
+	repository internal.IRepository
 	service    user.IService
 }
 
@@ -21,7 +22,7 @@ type IHandler interface {
 	GetUsers(c *fiber.Ctx) error
 }
 
-func NewHandler(repository user.IRepository, service user.IService) IHandler {
+func NewHandler(repository internal.IRepository, service user.IService) IHandler {
 	return &Handler{
 		repository: repository,
 		service:    service,

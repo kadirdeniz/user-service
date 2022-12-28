@@ -1,20 +1,21 @@
-package user
+package internal
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
+	"user-service/internal/user"
 	"user-service/tools/mongodb"
 	"user-service/tools/redis"
 )
 
 //go:generate mockgen -source=repository.go -destination=../../test/mock/mock_repository.go -package=mock
 type IRepository interface {
-	Upsert(user *User) error
+	Upsert(user *user.User) error
 	IsEmailExists(email string) (bool, error)
 	IsNicknameExists(nickname string) (bool, error)
 	DeleteUserByID(id primitive.ObjectID) error
-	GetUserByID(id primitive.ObjectID) (*User, error)
-	GetUsers() ([]*User, error)
+	GetUserByID(id primitive.ObjectID) (*user.User, error)
+	GetUsers() ([]*user.User, error)
 }
 
 type Repository struct {
@@ -29,12 +30,12 @@ func NewRepository(mongoDBInterface mongodb.MongoDBInterface, redisClient redis.
 	}
 }
 
-func (r Repository) Upsert(user *User) error {
+func (r Repository) Upsert(user *user.User) error {
 	if err := r.MongoDBInterface.Upsert(user); err != nil {
 		return err
 	}
 
-	if err := r.RedisClient.SetUser(user, 20); err != nil {
+	if err := r.RedisClient.SetUser(user, redis.TTL); err != nil {
 		log.Printf("Error while setting user to redis:", err)
 		return nil
 	}
@@ -60,26 +61,27 @@ func (r Repository) IsNicknameExists(nickname string) (bool, error) {
 	return isNicknameExists, nil
 }
 
-func (r Repository) GetUserByID(id primitive.ObjectID) (*User, error) {
+func (r Repository) GetUserByID(id primitive.ObjectID) (*user.User, error) {
 
-	user, err := r.RedisClient.GetUserByID(id)
+	userObj, err := r.RedisClient.GetUserByID(id)
 	if err != nil {
 		log.Printf("Error while getting user from redis:", err)
+	} else if userObj != nil {
+		return userObj, nil
 	}
 
-	if user != nil {
-		return user, nil
-	}
-
-	user, err = r.MongoDBInterface.GetUserByID(id)
+	userObj, err = r.MongoDBInterface.GetUserByID(id)
 	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			return new(user.User), nil
+		}
 		return nil, err
 	}
 
-	return user, nil
+	return userObj, nil
 }
 
-func (r Repository) GetUsers() ([]*User, error) {
+func (r Repository) GetUsers() ([]*user.User, error) {
 	users, err := r.MongoDBInterface.GetUsers()
 	if err != nil {
 		return nil, err
@@ -93,7 +95,7 @@ func (r Repository) DeleteUserByID(id primitive.ObjectID) error {
 		return err
 	}
 
-	user := &User{
+	user := &user.User{
 		ID: id,
 	}
 

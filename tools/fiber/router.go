@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"user-service/internal"
 	"user-service/internal/user"
 	"user-service/pkg"
 	"user-service/tools/mongodb"
@@ -38,7 +39,7 @@ func StartServer(port int) error {
 	}
 
 	// Create repository
-	repository := user.NewRepository(db, redis)
+	repository := internal.NewRepository(db, redis)
 
 	// Create service
 	service := user.NewService()
@@ -48,11 +49,13 @@ func StartServer(port int) error {
 
 	app := fiber.New()
 
-	app.Post("/user", handler.CreateUser)
-	app.Put("/user/:id", handler.UpdateUser)
-	app.Delete("/user/:id", handler.DeleteUser)
-	app.Get("/user/:id", handler.GetUser)
-	app.Get("/users", handler.GetUsers)
+	user := app.Group("/user")
+
+	user.Post("/", handler.CreateUser)
+	user.Put("/:id", handler.UpdateUser)
+	user.Delete("/:id", handler.DeleteUser)
+	user.Get("/:id", handler.GetUser)
+	user.Get("/", handler.GetUsers)
 
 	return app.Listen(fmt.Sprintf(":%d", port))
 }

@@ -4,24 +4,37 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 	"user-service/internal/user"
+	"user-service/pkg"
 )
 
 const userPrefix = "user:"
 
-func (r *Redis) GetUserByID(userId primitive.ObjectID) (*user.User, error) {
-	var user *user.User
+var TTL = 20 * time.Minute
 
-	err := r.GetRedisClient().Get(CTX, userPrefix+userId.Hex()).Scan(user)
+func (r *Redis) GetUserByID(userId primitive.ObjectID) (*user.User, error) {
+	var userObj *user.User
+
+	userStr, err := r.GetRedisClient().Get(CTX, userPrefix+userId.Hex()).Result()
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	err = pkg.JSONEncoder([]byte(userStr), &userObj)
+	if err != nil {
+		return new(user.User), err
+	}
+
+	return userObj, nil
 }
 
 func (r *Redis) SetUser(user *user.User, ttl time.Duration) error {
 
-	err := r.GetRedisClient().Set(CTX, userPrefix+user.ID.Hex(), user, ttl).Err()
+	decodedUser, err := pkg.JSONDecoder(user)
+	if err != nil {
+		return err
+	}
+
+	err = r.GetRedisClient().Set(CTX, userPrefix+user.ID.Hex(), decodedUser, ttl).Err()
 	if err != nil {
 		return err
 	}

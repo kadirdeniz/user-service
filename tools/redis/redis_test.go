@@ -3,7 +3,6 @@ package redis_test
 import (
 	"testing"
 	"time"
-	"user-service/pkg"
 	"user-service/test/mock"
 	"user-service/tools/dockertest"
 	"user-service/tools/redis"
@@ -12,12 +11,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var redisConfig = pkg.RedisConfig{
-	Host: "localhost",
-	Port: "6379",
-	//Password: "",
-	DB: 0,
-}
+var redisConfig = mock.RedisConfig
 
 func TestRedis(t *testing.T) {
 	RegisterFailHandler(Fail)

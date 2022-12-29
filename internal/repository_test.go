@@ -1,8 +1,7 @@
-package internal_test
+package internal
 
 import (
 	"testing"
-	"user-service/internal"
 	"user-service/internal/user"
 	"user-service/pkg"
 	"user-service/test/mock"
@@ -41,7 +40,7 @@ var _ = Describe("User Repository", Ordered, func() {
 	var mongoContainer *dockertest.Dockertest
 	var redisContainer *dockertest.Dockertest
 
-	var repo internal.IRepository
+	var repo IRepository
 
 	BeforeAll(func() {
 		mongoContainer = dockertest.NewDockertest("")
@@ -63,7 +62,7 @@ var _ = Describe("User Repository", Ordered, func() {
 
 	Context("NewUserRepository", func() {
 		It("should return user repository", func() {
-			repo = internal.NewRepository(mongo, redisClient)
+			repo = NewRepository(mongo, redisClient)
 			Expect(mongo).ShouldNot(BeNil())
 			Expect(redisClient).ShouldNot(BeNil())
 		})
@@ -88,7 +87,7 @@ var _ = Describe("User Repository", Ordered, func() {
 		})
 
 		Context("GetUserByID", func() {
-			It("should return user", func() {
+			It("shouldnt return user", func() {
 				_, err := repo.GetUserByID(mock.MockUser.ID)
 				Expect(err).ShouldNot(BeNil())
 				Expect(err).Should(Equal(pkg.ErrUserNotFound))

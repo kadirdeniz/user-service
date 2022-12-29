@@ -34,45 +34,25 @@ func (h Handler) CreateUser(c *fiber.Ctx) error {
 	var CreateUserRequest dto.CreateUserRequest
 
 	if err := c.BodyParser(&CreateUserRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusBadRequest).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	isEmailExists, err := h.repository.IsEmailExists(CreateUserRequest.Email)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	if isEmailExists {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  false,
-			"message": "Email already exists",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusBadRequest).JSON(pkg.EmailAlreadyExistsResponse)
 	}
 
 	isNicknameExists, err := h.repository.IsNicknameExists(CreateUserRequest.Nickname)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	if isNicknameExists {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  false,
-			"message": "Nickname already exists",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusBadRequest).JSON(pkg.NicknameAlreadyExistsResponse)
 	}
 
 	userObj := user.New(
@@ -84,18 +64,10 @@ func (h Handler) CreateUser(c *fiber.Ctx) error {
 	)
 
 	if err := h.repository.Upsert(userObj); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  true,
-		"message": "User created",
-		"data":    nil,
-	})
+	return c.Status(fiber.StatusOK).JSON(pkg.UserCreatedSuccessResponse)
 }
 
 func (h Handler) DeleteUser(c *fiber.Ctx) error {
@@ -104,35 +76,18 @@ func (h Handler) DeleteUser(c *fiber.Ctx) error {
 
 	userObj, err := h.repository.GetUserByID(userId)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	if userObj.ID == primitive.NilObjectID {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"status":  false,
-			"message": "User not found",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusNotFound).JSON(pkg.UserNotFoundResponse)
 	}
 
 	if err := h.repository.DeleteUserByID(userId); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  true,
-		"message": "User deleted",
-		"data":    nil,
-	})
-
+	return c.Status(fiber.StatusOK).JSON(pkg.UserDeletedSuccessResponse)
 }
 
 func (h Handler) UpdateUser(c *fiber.Ctx) error {
@@ -141,63 +96,35 @@ func (h Handler) UpdateUser(c *fiber.Ctx) error {
 
 	userObj, err := h.repository.GetUserByID(userId)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	if userObj.ID == primitive.NilObjectID {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"status":  false,
-			"message": "User not found",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusNotFound).JSON(pkg.UserNotFoundResponse)
 	}
 
 	var UpdateUserRequest dto.UpdateUserRequest
 
 	if err := pkg.JSONEncoder(c.Body(), &UpdateUserRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusBadRequest).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	isEmailExists, err := h.repository.IsEmailExists(UpdateUserRequest.Email)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	if isEmailExists {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
-			"status":  false,
-			"message": "Email already exists",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusConflict).JSON(pkg.EmailAlreadyExistsResponse)
 	}
 
 	isNicknameExists, err := h.repository.IsNicknameExists(UpdateUserRequest.Nickname)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	if isNicknameExists {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
-			"status":  false,
-			"message": "Nickname already exists",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusConflict).JSON(pkg.NicknameAlreadyExistsResponse)
 	}
 
 	if UpdateUserRequest.FirstName != "" {
@@ -217,18 +144,10 @@ func (h Handler) UpdateUser(c *fiber.Ctx) error {
 	}
 
 	if err := h.repository.Upsert(userObj); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  true,
-		"message": "User updated",
-		"data":    nil,
-	})
+	return c.Status(fiber.StatusOK).JSON(pkg.UserUpdatedSuccessResponse)
 }
 
 func (h Handler) GetUser(c *fiber.Ctx) error {
@@ -236,42 +155,22 @@ func (h Handler) GetUser(c *fiber.Ctx) error {
 
 	userObj, err := h.repository.GetUserByID(userId)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
 	if userObj.ID == primitive.NilObjectID {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"status":  false,
-			"message": "User not found",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusNotFound).JSON(pkg.UserNotFoundResponse)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  true,
-		"message": "User found",
-		"data":    userObj,
-	})
+	return c.Status(fiber.StatusOK).JSON(pkg.NewResponse(true, "User found", userObj))
 }
 
 func (h Handler) GetUsers(c *fiber.Ctx) error {
 	users, err := h.repository.GetUsers()
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  false,
-			"message": "something went wrong",
-			"data":    nil,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  true,
-		"message": "Users found",
-		"data":    users,
-	})
+	return c.Status(fiber.StatusOK).JSON(pkg.NewResponse(true, "Users found", users))
 }

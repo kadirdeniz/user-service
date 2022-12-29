@@ -12,13 +12,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var mongoConfig = pkg.MongoDBConfig{
-	Username: "admin",
-	Password: "admin",
-	Host:     "localhost",
-	Port:     "27017",
-	Database: "test",
-}
+var mongoConfig = mock.MongoConfig
 
 func TestMongodb(t *testing.T) {
 	RegisterFailHandler(Fail)

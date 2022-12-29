@@ -6,10 +6,3 @@ type UpdateUserRequest struct {
 	Nickname  string `json:"nickname" bson:"nickname"`
 	Email     string `json:"email" bson:"email"`
 }
-
-var UpdateUserRequestExample = UpdateUserRequest{
-	FirstName: "John",
-	LastName:  "Doe",
-	Nickname:  "johndoe",
-	Email:     "johndoe@mail.com",
-}

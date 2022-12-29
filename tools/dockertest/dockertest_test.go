@@ -30,6 +30,9 @@ var _ = Describe("Dockertest", Ordered, func() {
 			dockertest := NewDockertest("")
 			err := dockertest.RunMongoDB(mongoConfig)
 			Expect(err).Should(BeNil())
+
+			err = dockertest.Purge()
+			Expect(err).Should(BeNil())
 		})
 	})
 
@@ -38,21 +41,8 @@ var _ = Describe("Dockertest", Ordered, func() {
 			dockertest := NewDockertest("")
 			err := dockertest.RunRedis(redisConfig)
 			Expect(err).Should(BeNil())
-		})
-	})
 
-	Context("Purge", func() {
-		It("should be purge redis", func() {
-			dockertest := NewDockertest("")
-			dockertest.RunRedis(redisConfig)
-			err := dockertest.Purge()
-			Expect(err).Should(BeNil())
-		})
-
-		It("should be purge mongo", func() {
-			dockertest := NewDockertest("")
-			dockertest.RunMongoDB(mongoConfig)
-			err := dockertest.Purge()
+			err = dockertest.Purge()
 			Expect(err).Should(BeNil())
 		})
 	})

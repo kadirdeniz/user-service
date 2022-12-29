@@ -17,14 +17,7 @@ var MockUser = &user.User{
 }
 
 var MockUsers = []*user.User{
-	{
-		ID:        primitive.NewObjectID(),
-		FirstName: "John",
-		LastName:  "Doe",
-		Nickname:  "johndoe",
-		Email:     "johndoe@mail.com",
-		Password:  "password",
-	},
+	MockUser,
 	{
 		ID:        primitive.NewObjectID(),
 		FirstName: "Jane",

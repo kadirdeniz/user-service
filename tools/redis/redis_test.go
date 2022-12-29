@@ -3,6 +3,7 @@ package redis_test
 import (
 	"testing"
 	"time"
+	"user-service/internal/user"
 	"user-service/test/mock"
 	"user-service/tools/dockertest"
 	"user-service/tools/redis"
@@ -55,10 +56,44 @@ var _ = Describe("Redis", Ordered, func() {
 		})
 	})
 
-	Context("SetUser", func() {
-		It("should set user", func() {
-			err := redisClient.SetUser(mock.MockUser, time.Second)
+	Context("RemoveAllKeys", func() {
+		It("should return redis client", func() {
+			err := redisClient.RemoveAllKeys()
 			Expect(err).Should(BeNil())
+		})
+	})
+
+	When("User is not exist", func() {
+		Context("GetUserByID", func() {
+			It("shouldnt return user", func() {
+				userObj, err := redisClient.GetUserByID(mock.MockUser.ID)
+				Expect(err).Should(BeNil())
+				Expect(userObj).Should(Equal(new(user.User)))
+			})
+		})
+
+		Context("SetUser", func() {
+			It("should set user", func() {
+				err := redisClient.SetUser(mock.MockUser, time.Minute)
+				Expect(err).Should(BeNil())
+			})
+		})
+	})
+
+	When("User is exist", func() {
+		Context("GetUserByID", func() {
+			It("should return user", func() {
+				user, err := redisClient.GetUserByID(mock.MockUser.ID)
+				Expect(err).Should(BeNil())
+				Expect(user).ShouldNot(Equal(mock.MockUser))
+			})
+		})
+
+		Context("SetUser", func() {
+			It("should set user", func() {
+				err := redisClient.SetUser(mock.MockUser, 0)
+				Expect(err).Should(BeNil())
+			})
 		})
 	})
 
@@ -69,4 +104,5 @@ var _ = Describe("Redis", Ordered, func() {
 			Expect(user).ShouldNot(BeNil())
 		})
 	})
+
 })

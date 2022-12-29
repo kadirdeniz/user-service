@@ -25,6 +25,7 @@ type RedisInterface interface {
 	Connect() (*Redis, error)
 	GetUserByID(userId primitive.ObjectID) (*user.User, error)
 	SetUser(user *user.User, ttl time.Duration) error
+	RemoveAllKeys() error
 }
 
 func NewRedis(configs pkg.RedisConfig) RedisInterface {

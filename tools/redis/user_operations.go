@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 	"user-service/internal/user"
@@ -16,6 +17,9 @@ func (r *Redis) GetUserByID(userId primitive.ObjectID) (*user.User, error) {
 
 	userStr, err := r.GetRedisClient().Get(CTX, userPrefix+userId.Hex()).Result()
 	if err != nil {
+		if err == redis.Nil {
+			return new(user.User), nil
+		}
 		return nil, err
 	}
 
@@ -35,6 +39,15 @@ func (r *Redis) SetUser(user *user.User, ttl time.Duration) error {
 	}
 
 	err = r.GetRedisClient().Set(CTX, userPrefix+user.ID.Hex(), decodedUser, ttl).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Redis) RemoveAllKeys() error {
+	err := r.GetRedisClient().FlushAll(CTX).Err()
 	if err != nil {
 		return err
 	}

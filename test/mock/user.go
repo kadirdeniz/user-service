@@ -5,13 +5,15 @@ import (
 	"user-service/internal/user"
 )
 
+var userId, _ = primitive.ObjectIDFromHex("63add115ed3628749870398e")
+
 var MockUser = &user.User{
-	ID:        primitive.NewObjectID(),
+	ID:        userId,
 	FirstName: "John",
 	LastName:  "Doe",
 	Nickname:  "johndoe",
 	Email:     "johndoe@mail.com",
-	Password:  "password",
+	Password:  "123456",
 }
 
 var MockUsers = []*user.User{

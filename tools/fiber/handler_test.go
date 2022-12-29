@@ -31,7 +31,7 @@ var _ = Describe("Handler", Ordered, func() {
 	var mockRepository *mock.MockIRepository
 	var mockService *mock.MockIService
 
-	BeforeAll(func() {
+	BeforeEach(func() {
 		mockRepository = mock.NewMockIRepository(ctrl)
 		mockService = mock.NewMockIService(ctrl)
 	})
@@ -54,12 +54,14 @@ var _ = Describe("Handler", Ordered, func() {
 	Context("DeleteUserByID", func() {
 		When("user is found", func() {
 			It("should return user", func() {
+				mock.MockRepositoryGetUser(*mockRepository)
 				mock.MockRepositoryDeleteUser(*mockRepository)
 				deleteUserByIDHandler(mockRepository, mockService, pkg.UserDeletedSuccessResponse)
 			})
 		})
 		When("user is not found", func() {
 			It("should return error", func() {
+				mock.MockRepositoryGetUserNotFound(*mockRepository)
 				mock.MockRepositoryDeleteUserNotFound(*mockRepository)
 				deleteUserByIDHandler(mockRepository, mockService, pkg.UserNotFoundResponse)
 			})
@@ -88,6 +90,7 @@ var _ = Describe("Handler", Ordered, func() {
 			It("should return error", func() {
 				mock.MockRepositoryIsNicknameExistsTrue(*mockRepository)
 				mock.MockRepositoryIsEmailExistsFalse(*mockRepository)
+				mock.MockRepositoryUpsert(*mockRepository)
 				createUserHandler(mockRepository, mockService, pkg.NicknameAlreadyExistsResponse)
 			})
 		})
@@ -98,6 +101,7 @@ var _ = Describe("Handler", Ordered, func() {
 			It("should return user", func() {
 				mock.MockRepositoryIsEmailExistsFalse(*mockRepository)
 				mock.MockRepositoryIsNicknameExistsFalse(*mockRepository)
+				mock.MockRepositoryGetUser(*mockRepository)
 				mock.MockRepositoryUpsert(*mockRepository)
 				updateUserHandler(mockRepository, mockService, pkg.UserUpdatedSuccessResponse)
 			})
@@ -107,6 +111,7 @@ var _ = Describe("Handler", Ordered, func() {
 			It("should return error", func() {
 				mock.MockRepositoryIsEmailExistsTrue(*mockRepository)
 				mock.MockRepositoryIsNicknameExistsFalse(*mockRepository)
+				mock.MockRepositoryGetUser(*mockRepository)
 				mock.MockRepositoryUpsert(*mockRepository)
 				updateUserHandler(mockRepository, mockService, pkg.EmailAlreadyExistsResponse)
 			})
@@ -116,8 +121,19 @@ var _ = Describe("Handler", Ordered, func() {
 			It("should return error", func() {
 				mock.MockRepositoryIsNicknameExistsTrue(*mockRepository)
 				mock.MockRepositoryIsEmailExistsFalse(*mockRepository)
+				mock.MockRepositoryGetUser(*mockRepository)
 				mock.MockRepositoryUpsert(*mockRepository)
 				updateUserHandler(mockRepository, mockService, pkg.NicknameAlreadyExistsResponse)
+			})
+		})
+
+		When("user not found", func() {
+			It("should return error", func() {
+				mock.MockRepositoryIsNicknameExistsTrue(*mockRepository)
+				mock.MockRepositoryIsEmailExistsFalse(*mockRepository)
+				mock.MockRepositoryGetUserNotFound(*mockRepository)
+				mock.MockRepositoryUpsert(*mockRepository)
+				updateUserHandler(mockRepository, mockService, pkg.UserNotFoundResponse)
 			})
 		})
 	})
@@ -155,7 +171,6 @@ func createUserHandler(mockRepository *mock.MockIRepository, mockService *mock.M
 
 	Expect(responseObj.Status).To(Equal(mockResponse.Status))
 	Expect(responseObj.Message).To(Equal(mockResponse.Message))
-	Expect(responseObj.Data).To(Equal(mockResponse.Data))
 }
 
 func updateUserHandler(mockRepository *mock.MockIRepository, mockService *mock.MockIService, mockResponse pkg.Response) {
@@ -166,9 +181,9 @@ func updateUserHandler(mockRepository *mock.MockIRepository, mockService *mock.M
 	handler := fibertools.NewHandler(mockRepository, mockService)
 
 	app := fiber.New()
-	app.Put("/user", handler.UpdateUser)
+	app.Put("/user/:id", handler.UpdateUser)
 
-	req := httptest.NewRequest("PUT", "/user", bytes.NewReader(byteRequest))
+	req := httptest.NewRequest("PUT", "/user/"+mock.MockUser.ID.Hex(), bytes.NewReader(byteRequest))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := app.Test(req, -1)
@@ -181,7 +196,6 @@ func updateUserHandler(mockRepository *mock.MockIRepository, mockService *mock.M
 
 	Expect(responseObj.Status).To(Equal(mockResponse.Status))
 	Expect(responseObj.Message).To(Equal(mockResponse.Message))
-	Expect(responseObj.Data).To(Equal(mockResponse.Data))
 }
 
 func getUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mock.MockIService, mockResponse pkg.Response) {
@@ -192,7 +206,7 @@ func getUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mock.
 	app := fiber.New()
 	app.Get("/user/:id", handler.GetUser)
 
-	req := httptest.NewRequest("GET", "/user/1", nil)
+	req := httptest.NewRequest("GET", "/user/"+mock.MockUser.ID.Hex(), nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := app.Test(req, -1)
@@ -205,7 +219,6 @@ func getUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mock.
 
 	Expect(responseObj.Status).To(Equal(mockResponse.Status))
 	Expect(responseObj.Message).To(Equal(mockResponse.Message))
-	Expect(responseObj.Data).To(Equal(mockResponse.Data))
 }
 
 func deleteUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mock.MockIService, mockResponse pkg.Response) {
@@ -216,7 +229,7 @@ func deleteUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mo
 	app := fiber.New()
 	app.Delete("/user/:id", handler.DeleteUser)
 
-	req := httptest.NewRequest("DELETE", "/user/1", nil)
+	req := httptest.NewRequest("DELETE", "/user/"+mock.MockUser.ID.Hex(), nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := app.Test(req, -1)
@@ -229,7 +242,6 @@ func deleteUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mo
 
 	Expect(responseObj.Status).To(Equal(mockResponse.Status))
 	Expect(responseObj.Message).To(Equal(mockResponse.Message))
-	Expect(responseObj.Data).To(Equal(mockResponse.Data))
 }
 
 func getUsersHandler(mockRepository *mock.MockIRepository, mockService *mock.MockIService, mockResponse pkg.Response) {
@@ -253,5 +265,4 @@ func getUsersHandler(mockRepository *mock.MockIRepository, mockService *mock.Moc
 
 	Expect(responseObj.Status).To(Equal(mockResponse.Status))
 	Expect(responseObj.Message).To(Equal(mockResponse.Message))
-	Expect(responseObj.Data).To(Equal(mockResponse.Data))
 }

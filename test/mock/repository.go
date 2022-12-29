@@ -1,5 +1,10 @@
 package mock
 
+import (
+	"github.com/golang/mock/gomock"
+	"user-service/internal/user"
+)
+
 func MockRepositoryIsEmailExistsTrue(mockRepository MockIRepository) {
 	mockRepository.EXPECT().IsEmailExists(MockUser.Email).Return(true, nil).Times(1)
 }
@@ -17,7 +22,7 @@ func MockRepositoryIsNicknameExistsFalse(mockRepository MockIRepository) {
 }
 
 func MockRepositoryUpsert(mockRepository MockIRepository) {
-	mockRepository.EXPECT().Upsert(MockUser).Return(nil).Times(1)
+	mockRepository.EXPECT().Upsert(gomock.Any()).Return(nil).Times(1)
 }
 
 func MockRepositoryGetUsers(mockRepository MockIRepository) {
@@ -29,7 +34,7 @@ func MockRepositoryGetUser(mockRepository MockIRepository) {
 }
 
 func MockRepositoryGetUserNotFound(mockRepository MockIRepository) {
-	mockRepository.EXPECT().GetUserByID(MockUser.ID).Return(nil, nil).Times(1)
+	mockRepository.EXPECT().GetUserByID(MockUser.ID).Return(new(user.User), nil).Times(1)
 }
 
 func MockRepositoryDeleteUser(mockRepository MockIRepository) {

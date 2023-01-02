@@ -1,2 +1,8 @@
 run:
-	go run cmd/main.go
+	bash scripts/run.sh
+
+docker-mongo:
+	bash scripts/docker-mongo.sh
+
+docker-redis:
+	bash scripts/docker-redis.sh

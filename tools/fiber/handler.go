@@ -79,7 +79,7 @@ func (h Handler) DeleteUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
-	if userObj.ID == primitive.NilObjectID {
+	if userObj.IsEmpty() {
 		return c.Status(fiber.StatusNotFound).JSON(pkg.UserNotFoundResponse)
 	}
 
@@ -99,7 +99,7 @@ func (h Handler) UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
-	if userObj.ID == primitive.NilObjectID {
+	if userObj.IsEmpty() {
 		return c.Status(fiber.StatusNotFound).JSON(pkg.UserNotFoundResponse)
 	}
 
@@ -158,7 +158,7 @@ func (h Handler) GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(pkg.SomethingWentWrongResponse)
 	}
 
-	if userObj.ID == primitive.NilObjectID {
+	if userObj.IsEmpty() {
 		return c.Status(fiber.StatusNotFound).JSON(pkg.UserNotFoundResponse)
 	}
 

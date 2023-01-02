@@ -68,7 +68,7 @@ func (r Repository) GetUserByID(id primitive.ObjectID) (*user.User, error) {
 		fmt.Println("Error while getting user from redis:", err)
 	}
 
-	if userObj.ID != primitive.NilObjectID {
+	if !userObj.IsEmpty() {
 		return userObj, nil
 	}
 

@@ -21,3 +21,7 @@ func New(firstName, lastName, nickname, email, password string) *User {
 		Password:  password,
 	}
 }
+
+func (u *User) IsEmpty() bool {
+	return u.ID.IsZero()
+}

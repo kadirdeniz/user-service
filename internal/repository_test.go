@@ -4,7 +4,6 @@ import (
 	"testing"
 	"user-service/internal/user"
 	"user-service/pkg"
-	"user-service/test/mock"
 	"user-service/tools/dockertest"
 	"user-service/tools/mongodb"
 	"user-service/tools/redis"
@@ -72,7 +71,7 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("IsEmailExists", func() {
 			It("should return false", func() {
-				isEmailExists, err := repo.IsEmailExists(mock.MockUser.Email)
+				isEmailExists, err := repo.IsEmailExists(user.MockUser.Email)
 				Expect(err).Should(BeNil())
 				Expect(isEmailExists).Should(BeFalse())
 			})
@@ -80,7 +79,7 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("IsNicknameExists", func() {
 			It("should return false", func() {
-				isNicknameExists, err := repo.IsNicknameExists(mock.MockUser.Nickname)
+				isNicknameExists, err := repo.IsNicknameExists(user.MockUser.Nickname)
 				Expect(err).Should(BeNil())
 				Expect(isNicknameExists).Should(BeFalse())
 			})
@@ -88,7 +87,7 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("GetUserByID", func() {
 			It("shouldnt return user", func() {
-				userObj, err := repo.GetUserByID(mock.MockUser.ID)
+				userObj, err := repo.GetUserByID(user.MockUser.ID)
 				Expect(err).ShouldNot(BeNil())
 				Expect(err).Should(Equal(pkg.ErrUserNotFound))
 				Expect(userObj).Should(BeNil())
@@ -106,7 +105,7 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("Upsert", func() {
 			It("should insert user", func() {
-				user := mock.MockUser
+				user := user.MockUser
 				err := repo.Upsert(user)
 				Expect(err).Should(BeNil())
 			})
@@ -117,7 +116,7 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("IsEmailExists", func() {
 			It("should return true", func() {
-				isEmailExists, err := repo.IsEmailExists(mock.MockUser.Email)
+				isEmailExists, err := repo.IsEmailExists(user.MockUser.Email)
 				Expect(err).Should(BeNil())
 				Expect(isEmailExists).Should(BeTrue())
 			})
@@ -125,7 +124,7 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("IsNicknameExists", func() {
 			It("should return true", func() {
-				isNicknameExists, err := repo.IsNicknameExists(mock.MockUser.Nickname)
+				isNicknameExists, err := repo.IsNicknameExists(user.MockUser.Nickname)
 				Expect(err).Should(BeNil())
 				Expect(isNicknameExists).Should(BeTrue())
 			})
@@ -133,14 +132,14 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		Context("GetUserByID", func() {
 			It("should return user", func() {
-				userObj, err := repo.GetUserByID(mock.MockUser.ID)
+				userObj, err := repo.GetUserByID(user.MockUser.ID)
 				Expect(err).Should(BeNil())
 				Expect(userObj).ShouldNot(BeNil())
-				Expect(userObj.ID).Should(Equal(mock.MockUser.ID))
-				Expect(userObj.FirstName).Should(Equal(mock.MockUser.FirstName))
-				Expect(userObj.LastName).Should(Equal(mock.MockUser.LastName))
-				Expect(userObj.Email).Should(Equal(mock.MockUser.Email))
-				Expect(userObj.Nickname).Should(Equal(mock.MockUser.Nickname))
+				Expect(userObj.ID).Should(Equal(user.MockUser.ID))
+				Expect(userObj.FirstName).Should(Equal(user.MockUser.FirstName))
+				Expect(userObj.LastName).Should(Equal(user.MockUser.LastName))
+				Expect(userObj.Email).Should(Equal(user.MockUser.Email))
+				Expect(userObj.Nickname).Should(Equal(user.MockUser.Nickname))
 			})
 		})
 
@@ -149,13 +148,13 @@ var _ = Describe("User Repository", Ordered, func() {
 				users, err := repo.GetUsers()
 				Expect(err).Should(BeNil())
 				Expect(users).ShouldNot(BeNil())
-				Expect(users).Should(Equal([]*user.User{mock.MockUser}))
+				Expect(users).Should(Equal([]*user.User{user.MockUser}))
 			})
 		})
 
 		Context("DeleteUserByID", func() {
 			It("should delete user", func() {
-				err := repo.DeleteUserByID(mock.MockUser.ID)
+				err := repo.DeleteUserByID(user.MockUser.ID)
 				Expect(err).Should(BeNil())
 			})
 		})

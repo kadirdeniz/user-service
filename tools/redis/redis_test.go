@@ -66,7 +66,7 @@ var _ = Describe("Redis", Ordered, func() {
 	When("User is not exist", func() {
 		Context("GetUserByID", func() {
 			It("shouldnt return user", func() {
-				userObj, err := redisClient.GetUserByID(mock.MockUser.ID)
+				userObj, err := redisClient.GetUserByID(user.MockUser.ID)
 				Expect(err).Should(BeNil())
 				Expect(userObj).Should(Equal(new(user.User)))
 			})
@@ -74,7 +74,7 @@ var _ = Describe("Redis", Ordered, func() {
 
 		Context("SetUser", func() {
 			It("should set user", func() {
-				err := redisClient.SetUser(mock.MockUser, time.Minute)
+				err := redisClient.SetUser(user.MockUser, time.Minute)
 				Expect(err).Should(BeNil())
 			})
 		})
@@ -83,15 +83,15 @@ var _ = Describe("Redis", Ordered, func() {
 	When("User is exist", func() {
 		Context("GetUserByID", func() {
 			It("should return user", func() {
-				user, err := redisClient.GetUserByID(mock.MockUser.ID)
+				userObj, err := redisClient.GetUserByID(user.MockUser.ID)
 				Expect(err).Should(BeNil())
-				Expect(user).ShouldNot(Equal(mock.MockUser))
+				Expect(userObj).ShouldNot(Equal(user.MockUser))
 			})
 		})
 
 		Context("SetUser", func() {
 			It("should set user", func() {
-				err := redisClient.SetUser(mock.MockUser, 0)
+				err := redisClient.SetUser(user.MockUser, 0)
 				Expect(err).Should(BeNil())
 			})
 		})
@@ -99,7 +99,7 @@ var _ = Describe("Redis", Ordered, func() {
 
 	Context("GetUserByID", func() {
 		It("should return user", func() {
-			user, err := redisClient.GetUserByID(mock.MockUser.ID)
+			user, err := redisClient.GetUserByID(user.MockUser.ID)
 			Expect(err).Should(BeNil())
 			Expect(user).ShouldNot(BeNil())
 		})

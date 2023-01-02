@@ -1,13 +1,12 @@
-package mock
+package user
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"user-service/internal/user"
 )
 
 var userId, _ = primitive.ObjectIDFromHex("63add115ed3628749870398e")
 
-var MockUser = &user.User{
+var MockUser = &User{
 	ID:        userId,
 	FirstName: "John",
 	LastName:  "Doe",
@@ -16,7 +15,7 @@ var MockUser = &user.User{
 	Password:  "123456",
 }
 
-var MockUsers = []*user.User{
+var MockUsers = []*User{
 	MockUser,
 	{
 		ID:        primitive.NewObjectID(),

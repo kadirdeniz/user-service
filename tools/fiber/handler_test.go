@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http/httptest"
 	"testing"
+	"user-service/internal/user"
 	"user-service/pkg"
 	"user-service/test/mock"
 	fibertools "user-service/tools/fiber"
@@ -183,7 +184,7 @@ func updateUserHandler(mockRepository *mock.MockIRepository, mockService *mock.M
 	app := fiber.New()
 	app.Put("/user/:id", handler.UpdateUser)
 
-	req := httptest.NewRequest("PUT", "/user/"+mock.MockUser.ID.Hex(), bytes.NewReader(byteRequest))
+	req := httptest.NewRequest("PUT", "/user/"+user.MockUser.ID.Hex(), bytes.NewReader(byteRequest))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := app.Test(req, -1)
@@ -206,7 +207,7 @@ func getUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mock.
 	app := fiber.New()
 	app.Get("/user/:id", handler.GetUser)
 
-	req := httptest.NewRequest("GET", "/user/"+mock.MockUser.ID.Hex(), nil)
+	req := httptest.NewRequest("GET", "/user/"+user.MockUser.ID.Hex(), nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := app.Test(req, -1)
@@ -229,7 +230,7 @@ func deleteUserByIDHandler(mockRepository *mock.MockIRepository, mockService *mo
 	app := fiber.New()
 	app.Delete("/user/:id", handler.DeleteUser)
 
-	req := httptest.NewRequest("DELETE", "/user/"+mock.MockUser.ID.Hex(), nil)
+	req := httptest.NewRequest("DELETE", "/user/"+user.MockUser.ID.Hex(), nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := app.Test(req, -1)

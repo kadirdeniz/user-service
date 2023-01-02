@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"testing"
 	"user-service/internal/user"
 	"user-service/pkg"
@@ -90,8 +89,6 @@ var _ = Describe("User Repository", Ordered, func() {
 		Context("GetUserByID", func() {
 			It("shouldnt return user", func() {
 				userObj, err := repo.GetUserByID(mock.MockUser.ID)
-				fmt.Println(userObj)
-				fmt.Println(err)
 				Expect(err).ShouldNot(BeNil())
 				Expect(err).Should(Equal(pkg.ErrUserNotFound))
 				Expect(userObj).Should(BeNil())

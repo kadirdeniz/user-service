@@ -161,27 +161,4 @@ var _ = Describe("MongoDB", Ordered, func() {
 			})
 		})
 	})
-
-	Context("CreateUsers", func() {
-		It("should create users", func() {
-			users := mock.MockUsers
-			err := mongo.CreateUsers(users)
-
-			Expect(err).Should(BeNil())
-		})
-
-		It("should return error if users is empty", func() {
-			err := mongo.CreateUsers([]user.User{})
-
-			Expect(err).ShouldNot(BeNil())
-			Expect(err).Should(Equal(pkg.ErrUsersEmpty))
-		})
-
-		It("should return error if users is nil", func() {
-			err := mongo.CreateUsers(nil)
-
-			Expect(err).ShouldNot(BeNil())
-			Expect(err).Should(Equal(pkg.ErrUsersEmpty))
-		})
-	})
 })

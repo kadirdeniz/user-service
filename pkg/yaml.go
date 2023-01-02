@@ -3,6 +3,8 @@ package pkg
 import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"path/filepath"
+	"runtime"
 )
 
 var AppConfigs Configs
@@ -48,12 +50,16 @@ func (c *Configs) ReadYamlFile(path string) error {
 }
 
 func (c *Configs) ReadConfigFiles() error {
-	err := c.ReadYamlFile("configs/mongodb.yaml")
+
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Join(filepath.Dir(b), "./..")
+
+	err := c.ReadYamlFile(filepath.Join(basepath, "./configs/mongodb.yaml"))
 	if err != nil {
 		return err
 	}
 
-	err = c.ReadYamlFile("configs/redis.yaml")
+	err = c.ReadYamlFile(filepath.Join(basepath, "./configs/redis.yaml"))
 	if err != nil {
 		return err
 	}

@@ -7,4 +7,4 @@ COPY . .
 
 EXPOSE 8000
 
-ENTRYPOINT [ "make", "run" ]
+ENTRYPOINT [ "go","run", "cmd/main.go" ]

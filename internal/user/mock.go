@@ -5,6 +5,8 @@ import (
 )
 
 var userId, _ = primitive.ObjectIDFromHex("63add115ed3628749870398e")
+var userId2, _ = primitive.ObjectIDFromHex("63add115ed36287498703999")
+var userId3, _ = primitive.ObjectIDFromHex("63add115ed36287498703988")
 
 var MockUser = &User{
 	ID:        userId,
@@ -18,7 +20,7 @@ var MockUser = &User{
 var MockUsers = []*User{
 	MockUser,
 	{
-		ID:        primitive.NewObjectID(),
+		ID:        userId2,
 		FirstName: "Jane",
 		LastName:  "Doe",
 		Nickname:  "janedoe",
@@ -26,7 +28,26 @@ var MockUsers = []*User{
 		Password:  "password",
 	},
 	{
-		ID:        primitive.NewObjectID(),
+		ID:        userId3,
+		FirstName: "John",
+		LastName:  "Smith",
+		Nickname:  "johnsmith",
+		Email:     "johnsmith@mail.com",
+		Password:  "password",
+	},
+}
+
+var MockUsers2 = []interface{}{
+	&User{
+		ID:        userId2,
+		FirstName: "Jane",
+		LastName:  "Doe",
+		Nickname:  "janedoe",
+		Email:     "janedoe@mail.com",
+		Password:  "password",
+	},
+	&User{
+		ID:        userId3,
 		FirstName: "John",
 		LastName:  "Smith",
 		Nickname:  "johnsmith",

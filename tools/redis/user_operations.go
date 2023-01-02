@@ -46,7 +46,7 @@ func (r *Redis) SetUser(user *user.User, ttl time.Duration) error {
 	return nil
 }
 
-func (r *Redis) RemoveAllKeys() error {
+func (r *Redis) Flush() error {
 	err := r.GetRedisClient().FlushAll(CTX).Err()
 	if err != nil {
 		return err

@@ -56,9 +56,9 @@ var _ = Describe("Redis", Ordered, func() {
 		})
 	})
 
-	Context("RemoveAllKeys", func() {
+	Context("Flush", func() {
 		It("should return redis client", func() {
-			err := redisClient.RemoveAllKeys()
+			err := redisClient.Flush()
 			Expect(err).Should(BeNil())
 		})
 	})

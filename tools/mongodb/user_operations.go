@@ -75,3 +75,19 @@ func (db *MongoDB) GetUsers() ([]*user.User, error) {
 
 	return users, nil
 }
+
+func (db *MongoDB) CreateUsers(users []interface{}) error {
+	if _, err := db.GetUserCollection().InsertMany(CTX, users); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *MongoDB) FlushUsers() error {
+	if _, err := db.GetUserCollection().DeleteMany(CTX, bson.M{}); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -34,6 +34,8 @@ type MongoDBInterface interface {
 	DeleteUserByID(id primitive.ObjectID) error
 	GetUserByID(id primitive.ObjectID) (*user.User, error)
 	GetUsers() ([]*user.User, error)
+	CreateUsers(users []interface{}) error
+	FlushUsers() error
 }
 
 func NewMongoDB(config pkg.MongoDBConfig) MongoDBInterface {

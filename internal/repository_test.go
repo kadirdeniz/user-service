@@ -52,6 +52,9 @@ var _ = Describe("User Repository", Ordered, func() {
 
 		mongo = mongodb.NewMongoDB(mongoConfig)
 		redisClient = redis.NewRedis(redisConfig)
+
+		mongo.FlushUsers()
+		redisClient.Flush()
 	})
 
 	AfterAll(func() {

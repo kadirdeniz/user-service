@@ -28,6 +28,8 @@ var _ = Describe("MongoDB", Ordered, func() {
 		dockerContainer = dockertest.NewDockertest("")
 		err := dockerContainer.RunMongoDB(mongoConfig)
 		Expect(err).Should(BeNil())
+
+		mongodb.NewMongoDB(mongoConfig).FlushUsers()
 	})
 
 	AfterAll(func() {
@@ -159,6 +161,35 @@ var _ = Describe("MongoDB", Ordered, func() {
 				Expect(err).Should(Equal(pkg.ErrUserNotFound))
 				Expect(users).Should(BeNil())
 			})
+		})
+	})
+
+	Context("Create Users", func() {
+		It("should create users", func() {
+			err := mongo.CreateUsers(user.MockUsers2)
+			Expect(err).Should(BeNil())
+		})
+
+		It("should return users", func() {
+			users, err := mongo.GetUsers()
+			Expect(err).Should(BeNil())
+			Expect(len(users)).Should(Equal(2))
+			Expect(users[0]).Should(Equal(user.MockUsers2[0]))
+			Expect(users[1]).Should(Equal(user.MockUsers2[1]))
+		})
+	})
+
+	Context("Flush Users", func() {
+		It("should delete users", func() {
+			err := mongo.FlushUsers()
+			Expect(err).Should(BeNil())
+		})
+
+		It("shouldnt return users", func() {
+			users, err := mongo.GetUsers()
+			Expect(err).ShouldNot(BeNil())
+			Expect(err).Should(Equal(pkg.ErrUserNotFound))
+			Expect(users).Should(BeNil())
 		})
 	})
 })

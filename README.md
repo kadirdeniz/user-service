@@ -17,7 +17,7 @@ $ make run
 
 ## Architectural Decisions
 
-This repository is created with using `Test Driven Development`.`Dockertest` package for integration testing with `mongodb` and `redis`, `Ginkgo` was used for increase the understanding of test codes. All test can be run with using `make tests` command. Before run the tests mongodb and redis needs to be created.
+This repository is created with using `Test Driven Development`.`Dockertest` package for integration testing with `mongodb` and `redis`, `Ginkgo` was used for increase the understanding of test codes. All tests can be run with using `make tests` command. Before run the tests mongodb and redis instances needs to be created.
 
 
 ## Tech Stack
